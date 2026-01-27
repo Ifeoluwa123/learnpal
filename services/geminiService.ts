@@ -4,7 +4,8 @@ import { DifficultyLevel, QuestionFormat } from "../types";
 
 // Always use the required initialization format and obtain the API key exclusively from process.env.API_KEY
 // const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-const getAI = () => new GoogleGenAI({ apiKey: 'AIzaSyAHbXAUR_v1RxEc49-jG4YqQ44YpHRaHM0' });
+const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
+
 
 export const paraphraseText = async (text: string, tone: string = 'academic'): Promise<string> => {
   const ai = getAI();
