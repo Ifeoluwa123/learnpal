@@ -1,0 +1,8 @@
+
+{
+  "name": "LearnPal",
+  "description": "A comprehensive student success suite featuring Plagiarism Checking, AI Detection, Question Generation, Paraphrasing, and Nano-Banana powered Image Editing.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
