@@ -30,7 +30,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     { id: 'plagiarism', title: 'Plagiarism', desc: 'Scan for Originality', icon: '🔍', color: 'bg-indigo-500', shadow: 'shadow-indigo-100' },
     { id: 'ai-detector', title: 'AI Detector', desc: 'Verify Human Writing', icon: '🤖', color: 'bg-indigo-600', shadow: 'shadow-indigo-100' },
     { id: 'paraphraser', title: 'Paraphraser', desc: 'Rewrite Smartly', icon: '✍️', color: 'bg-orange-500', shadow: 'shadow-orange-100' },
-    { id: 'image-editor', title: 'AI Photo', desc: 'Visual Assistance', icon: '🎨', color: 'bg-rose-500', shadow: 'shadow-rose-100' },
+    // { id: 'image-editor', title: 'AI Photo', desc: 'Visual Assistance', icon: '🎨', color: 'bg-rose-500', shadow: 'shadow-rose-100' },
   ];
 
   return (
