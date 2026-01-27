@@ -93,7 +93,7 @@ const App: React.FC = () => {
         <footer className="py-8 border-t border-slate-200 mt-12 bg-white px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-400 text-xs font-medium">
-              © 2024 LearnPal AI Hub. Academic Integrity Secured.
+              © 2026 LearnPal AI Hub. Academic Integrity Secured.
             </p>
             <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span className="hover:text-emerald-600 cursor-pointer transition-colors">Privacy</span>
