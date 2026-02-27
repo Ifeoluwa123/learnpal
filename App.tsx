@@ -10,6 +10,7 @@ import { Paraphraser } from './components/features/Paraphraser';
 import { ImageEditor } from './components/features/ImageEditor';
 import { AuthPages } from './components/auth/AuthPages';
 import { AppView, User } from './types';
+import { AISupervisor } from './components/features/AISupervisor';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -22,6 +23,7 @@ const App: React.FC = () => {
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
+    
     setIsReady(true);
   }, []);
 
@@ -57,8 +59,9 @@ const App: React.FC = () => {
         return <QuestionGenerator />;
       case 'paraphraser':
         return <Paraphraser />;
-      case 'image-editor':
-        return <ImageEditor />;
+  
+      case 'ai-supervisor':
+        return <AISupervisor />;
       default:
         return <Dashboard onNavigate={setCurrentView} />;
     }
@@ -93,7 +96,7 @@ const App: React.FC = () => {
         <footer className="py-8 border-t border-slate-200 mt-12 bg-white px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-400 text-xs font-medium">
-              © 2026 LearnPal AI Hub. Academic Integrity Secured.
+              © 2026 LearnPal AI Hub. Academic Integrity Secured. Designed by Ifeoluwa Seun
             </p>
             <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span className="hover:text-emerald-600 cursor-pointer transition-colors">Privacy</span>
