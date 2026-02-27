@@ -6,11 +6,16 @@ import { DifficultyLevel, QuestionFormat } from "../types";
 
 // Always use the required initialization format and obtain the API key exclusively from process.env.API_KEY
 // const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
+const getApiKey = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
 
-const getAI = () => {
-  return new GoogleGenAI({ apiKey: getApiKey() });
-};
+// const getApiKey = () => {
+//   // @ts-ignore
+//   return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
+// };
+
+// const getAI = () => {
+//   return new GoogleGenAI({ apiKey: getApiKey() });
+// };
 
 export const generateStudyOutline = async (text: string): Promise<StudyOutline> => {
   const ai = getAI();
