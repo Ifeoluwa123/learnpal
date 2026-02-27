@@ -5,8 +5,8 @@ import { DifficultyLevel, QuestionFormat, StudyOutline } from "../types";
 // Always use the required initialization format and obtain the API key exclusively from process.env
 const getApiKey = () => {
   // @ts-ignore
-  // return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
-    return 'AIzaSyA-BhQMTzyBEUKKuU9v0XRhB1JXUe_YO9s';
+  return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
+
 };
 
 const getAI = () => {
