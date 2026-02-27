@@ -53,3 +53,11 @@ export interface AIDetectionResult {
   confidenceScore: number;
   reasoning: string[];
 }
+
+
+export interface SupervisorResult {
+  detectedIssues: string[];
+  suggestedImprovements: string[];
+  structuralRecommendations: string[];
+  overallFeedback: string;
+}
