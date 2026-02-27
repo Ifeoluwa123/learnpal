@@ -252,7 +252,9 @@ export const editImageWithGemini = async (imageBase64: string, prompt: string, m
 export const reviewDocumentAsSupervisor = async (text: string): Promise<string> => {
   const ai = getAI();
   const response = await ai.models.generateContent({
-    model: 'gemini-3.1-pro-preview',
+    
+    // model: 'gemini-3.1-pro-preview',
+     model: 'gemini-3-flash-preview',
     contents: `You are an AI academic supervisor assistant called "AI-Supervisor" for the LearnPal 2.0 platform. Your task is to review a student’s document or text before it is submitted to their human supervisor. 
 
 For each document, you must:
