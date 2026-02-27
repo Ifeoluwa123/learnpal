@@ -19,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, user, onToggleSideb
     'ai-detector': 'AI Content Detector',
     'question-gen': 'AI Quiz Maker',
     paraphraser: 'Smart Paraphraser',
+    'image-editor': 'AI Image Studio',
     'ai-supervisor': 'AI Academic Supervisor'
   };
 
