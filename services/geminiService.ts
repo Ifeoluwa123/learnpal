@@ -3,13 +3,13 @@ import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
 import { DifficultyLevel, QuestionFormat, StudyOutline } from "../types";
 
 // Always use the required initialization format and obtain the API key exclusively from process.env
-const getApiKey = () => {
-  // @ts-ignore
-  return (typeof process !== 'undefined' ? (import.meta.env.VITE_API_URL ||  import.meta.env.GEMINI_API_KEY) : '') as string;
-};
+// const getApiKey = () => {
+//   // @ts-ignore
+//   return (typeof process !== 'undefined' ? (import.meta.env.VITE_API_URL ||  import.meta.env.GEMINI_API_KEY) : '') as string;
+// };
 
 const getAI = () => {
-  return new GoogleGenAI({ apiKey: getApiKey() });
+  return new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
 };
 
 export const generateStudyOutline = async (text: string): Promise<StudyOutline> => {
