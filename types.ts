@@ -1,11 +1,13 @@
 
-export type AppView = 'home' | 'plagiarism' | 'ai-detector' | 'question-gen' | 'paraphraser' | 'image-editor';
+export type AppView = 'home' | 'plagiarism' | 'ai-detector' | 'question-gen' | 'paraphraser' | 'image-editor' | 'immersive-study' | 'ai-supervisor';
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 
 export type QuestionFormat = 'options' | 'open' | 'mixed';
 
-export type AuthMode = 'login' | 'register' | 'forgot-password' | 'email-sent' | 'reset-password';
+export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
+
+export type LearningStyle = 'visual' | 'auditory';
 
 export interface User {
   id: string;
@@ -20,6 +22,19 @@ export interface GeneratedQuestion {
   options?: string[];
   answer: string;
   explanation: string;
+}
+
+export interface StudyTopic {
+  id: string;
+  title: string;
+  summary: string;
+  visualMetaphor: string;
+  keyPoints: string[];
+}
+
+export interface StudyOutline {
+  materialTitle: string;
+  topics: StudyTopic[];
 }
 
 export interface QuizHistoryItem {
@@ -53,7 +68,6 @@ export interface AIDetectionResult {
   confidenceScore: number;
   reasoning: string[];
 }
-
 
 export interface SupervisorResult {
   detectedIssues: string[];
