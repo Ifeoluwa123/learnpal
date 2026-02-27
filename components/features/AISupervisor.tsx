@@ -33,7 +33,7 @@ export const AISupervisor: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-3xl font-black text-slate-900">AI-Supervisor</h2>
-          <p className="text-slate-500 font-medium">Get MBA-level academic feedback before final submission.</p>
+          <p className="text-slate-500 font-medium">Get academic feedback before final submission.</p>
         </div>
         <FileUpload onDataExtracted={handleDataExtracted} label="Upload Draft" />
       </div>
