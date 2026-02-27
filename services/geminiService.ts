@@ -1,11 +1,84 @@
 
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
-import { DifficultyLevel, QuestionFormat } from "../types";
+import { DifficultyLevel, QuestionFormat, StudyOutline } from "../types";
 
-// Always use the required initialization format and obtain the API key exclusively from process.env.API_KEY
-// const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
+// Always use the required initialization format and obtain the API key exclusively from process.env
+const getApiKey = () => {
+  // @ts-ignore
+  return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
+};
 
+const getAI = () => {
+  return new GoogleGenAI({ apiKey: getApiKey() });
+};
+
+export const generateStudyOutline = async (text: string): Promise<StudyOutline> => {
+  const ai = getAI();
+  const response = await ai.models.generateContent({
+    model: 'gemini-3.1-pro-preview',
+    contents: `Analyze this study material and create a highly structured learning outline. Break it down into 3-5 distinct concepts. For each concept, provide a title, a short summary, a list of 3 key points, and a 'visualMetaphor' which is a description of a real-world scene that explains the concept visually.\n\nText: ${text}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          materialTitle: { type: Type.STRING },
+          topics: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.STRING },
+                title: { type: Type.STRING },
+                summary: { type: Type.STRING },
+                visualMetaphor: { type: Type.STRING },
+                keyPoints: { 
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                }
+              },
+              required: ["id", "title", "summary", "visualMetaphor", "keyPoints"]
+            }
+          }
+        },
+        required: ["materialTitle", "topics"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
+};
+
+export const createExplainerVideo = async (topicTitle: string, metaphor: string): Promise<string> => {
+  const ai = getAI();
+  const prompt = `A cinematic, highly detailed educational video for a student. The scene shows: ${metaphor}. Cinematic lighting, 4k, educational and clear representation of ${topicTitle}.`;
+  
+  let operation = await ai.models.generateVideos({
+    model: 'veo-3.1-fast-generate-preview',
+    prompt: prompt,
+    config: {
+      numberOfVideos: 1,
+      resolution: '720p',
+      aspectRatio: '16:9'
+    }
+  });
+
+  while (!operation.done) {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    operation = await ai.operations.getVideosOperation({ operation: operation });
+  }
+
+  const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
+  if (!downloadLink) throw new Error("Video generation failed");
+  
+  const response = await fetch(downloadLink, {
+    method: 'GET',
+    headers: {
+      'x-goog-api-key': getApiKey(),
+    },
+  });
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};
 
 export const paraphraseText = async (text: string, tone: string = 'academic'): Promise<string> => {
   const ai = getAI();
@@ -16,7 +89,6 @@ export const paraphraseText = async (text: string, tone: string = 'academic'): P
       temperature: 0.7,
     }
   });
-  // Use the .text property directly (not as a method)
   return response.text?.trim() || "Sorry, I couldn't paraphrase that.";
 };
 
@@ -41,7 +113,6 @@ export const detectAIContent = async (text: string): Promise<string> => {
       }
     }
   });
-  // Use the .text property directly
   return response.text || '';
 };
 
@@ -72,7 +143,6 @@ export const checkPlagiarism = async (text: string): Promise<string> => {
       }
     }
   });
-  // Use the .text property directly
   return response.text || '';
 };
 
@@ -100,14 +170,6 @@ export const generateQuestions = async (
   const corePrompt = `
 You are a precision-oriented educational assessment expert. 
 Your task is to generate exactly ${count} study questions BASED EXCLUSIVELY on the source content provided.
-
-CRITICAL FORMATTING RULES:
-1. NO EXTRA SPACES: Ensure all generated strings (questions, options, answers) have standard single-space word separation. Do not leave double spaces or trailing/leading spaces.
-2. STRICT GROUNDING: EVERY question must be directly answerable using only the information in the provided document. If the document is short, do not hallucinate outside facts.
-3. EXPLANATION DEPTH: The 'explanation' field must explicitly state why the correct answer is correct based on the text, and briefly why other options are incorrect or where the user might have been confused.
-
-Difficulty Level: ${difficulty} (${difficultyPrompt}).
-Question Format: ${format} (${formatPrompt}).
 
 SOURCE CONTENT:
 ---
@@ -140,8 +202,7 @@ ${text}
             question: { type: Type.STRING },
             options: { 
               type: Type.ARRAY, 
-              items: { type: Type.STRING },
-              description: "Only for multiple choice questions. Must contain 4 items if format is 'options'."
+              items: { type: Type.STRING }
             },
             answer: { type: Type.STRING },
             explanation: { type: Type.STRING }
@@ -151,7 +212,6 @@ ${text}
       }
     }
   });
-  // Use the .text property directly
   return response.text || '';
 };
 
@@ -175,7 +235,6 @@ export const editImageWithGemini = async (imageBase64: string, prompt: string, m
       },
     });
 
-    // Iterate through candidates and parts to find the image part
     for (const candidate of response.candidates || []) {
       for (const part of candidate.content?.parts || []) {
         if (part.inlineData) {
@@ -188,4 +247,51 @@ export const editImageWithGemini = async (imageBase64: string, prompt: string, m
     console.error("Image editing error:", error);
     return null;
   }
+};
+
+export const reviewDocumentAsSupervisor = async (text: string): Promise<string> => {
+  const ai = getAI();
+  const response = await ai.models.generateContent({
+    model: 'gemini-3.1-pro-preview',
+    contents: `You are an AI academic supervisor assistant called "AI-Supervisor" for the LearnPal 2.0 platform. Your task is to review a student’s document or text before it is submitted to their human supervisor. 
+
+For each document, you must:
+1. Detect missing links or gaps in the argument or explanation.
+2. Identify weak areas or points that need clarification or stronger evidence.
+3. Flag inconsistencies, contradictions, or unclear phrasing.
+4. Suggest concrete corrections and improvements in writing, structure, or logic.
+5. Refine the overall structure and logical flow of the document.
+6. Provide actionable, easy-to-understand feedback that the student can implement before final submission.
+7. Maintain an encouraging and professional tone appropriate for MBA-level academic work.
+
+Do not rewrite the entire document; focus on detecting flaws, missing links, or weak areas, and provide clear instructions for correction. Ensure the feedback is comprehensive but concise, as if preparing the document for final supervisor review.
+
+Output your analysis in a structured JSON format.
+
+Text to review:
+${text}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          detectedIssues: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          },
+          suggestedImprovements: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          },
+          structuralRecommendations: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          },
+          overallFeedback: { type: Type.STRING }
+        },
+        required: ["detectedIssues", "suggestedImprovements", "structuralRecommendations", "overallFeedback"]
+      }
+    }
+  });
+  return response.text || '';
 };
