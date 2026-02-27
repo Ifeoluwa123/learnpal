@@ -6,7 +6,7 @@ import { DifficultyLevel, QuestionFormat, StudyOutline } from "../types";
 const getApiKey = () => {
   // @ts-ignore
   // return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
-    return (typeof process !== 'undefined' ? ('AIzaSyBstyJ3Qt8MdM9YOw5L7VFz9RwK6BZ4l2s' || process.env.GEMINI_API_KEY) : '') as string;
+    return 'AIzaSyA-BhQMTzyBEUKKuU9v0XRhB1JXUe_YO9s';
 };
 
 const getAI = () => {
