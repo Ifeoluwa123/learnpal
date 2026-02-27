@@ -1,89 +1,26 @@
 
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
-;
+
 
 import { DifficultyLevel, QuestionFormat } from "../types";
 
 // Always use the required initialization format and obtain the API key exclusively from process.env.API_KEY
 // const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-const getApiKey = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
+// const getApiKey = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
 
 // const getApiKey = () => {
 //   // @ts-ignore
 //   return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
 // };
 
-const getAI = () => {
-  return new GoogleGenAI({ apiKey: getApiKey() });
-};
+// const getAI = () => {
+//   return new GoogleGenAI({ apiKey: getApiKey() });
+// };
 
-export const generateStudyOutline = async (text: string): Promise<StudyOutline> => {
-  const ai = getAI();
-  const response = await ai.models.generateContent({
-    model: 'gemini-3.1-pro-preview',
-    contents: `Analyze this study material and create a highly structured learning outline. Break it down into 3-5 distinct concepts. For each concept, provide a title, a short summary, a list of 3 key points, and a 'visualMetaphor' which is a description of a real-world scene that explains the concept visually.\n\nText: ${text}`,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          materialTitle: { type: Type.STRING },
-          topics: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                id: { type: Type.STRING },
-                title: { type: Type.STRING },
-                summary: { type: Type.STRING },
-                visualMetaphor: { type: Type.STRING },
-                keyPoints: { 
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING }
-                }
-              },
-              required: ["id", "title", "summary", "visualMetaphor", "keyPoints"]
-            }
-          }
-        },
-        required: ["materialTitle", "topics"]
-      }
-    }
-  });
-  return JSON.parse(response.text || '{}');
-};
 
-export const createExplainerVideo = async (topicTitle: string, metaphor: string): Promise<string> => {
-  const ai = getAI();
-  const prompt = `A cinematic, highly detailed educational video for a student. The scene shows: ${metaphor}. Cinematic lighting, 4k, educational and clear representation of ${topicTitle}.`;
-  
-  let operation = await ai.models.generateVideos({
-    model: 'veo-3.1-fast-generate-preview',
-    prompt: prompt,
-    config: {
-      numberOfVideos: 1,
-      resolution: '720p',
-      aspectRatio: '16:9'
-    }
-  });
 
-  while (!operation.done) {
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    operation = await ai.operations.getVideosOperation({ operation: operation });
-  }
+const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
 
-  const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
-  if (!downloadLink) throw new Error("Video generation failed");
-  
-  const response = await fetch(downloadLink, {
-    method: 'GET',
-    headers: {
-      'x-goog-api-key': getApiKey(),
-    },
-  });
-  const blob = await response.blob();
-  return URL.createObjectURL(blob);
-};
 
 export const paraphraseText = async (text: string, tone: string = 'academic'): Promise<string> => {
   const ai = getAI();
