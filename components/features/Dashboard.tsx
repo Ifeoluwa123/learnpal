@@ -27,6 +27,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
   const tools = [
     { id: 'question-gen', title: 'Quiz Maker', desc: 'Notes to Knowledge', icon: '📝', color: 'bg-emerald-500', shadow: 'shadow-emerald-100' },
+     { id: 'ai-supervisor', title: 'AI Supervisor', desc: 'Academic Review', icon: '🎓', color: 'bg-emerald-900', shadow: 'shadow-emerald-900' },
     { id: 'plagiarism', title: 'Plagiarism', desc: 'Scan for Originality', icon: '🔍', color: 'bg-indigo-500', shadow: 'shadow-indigo-100' },
     { id: 'ai-detector', title: 'AI Detector', desc: 'Verify Human Writing', icon: '🤖', color: 'bg-indigo-600', shadow: 'shadow-indigo-100' },
     { id: 'paraphraser', title: 'Paraphraser', desc: 'Rewrite Smartly', icon: '✍️', color: 'bg-orange-500', shadow: 'shadow-orange-100' },
