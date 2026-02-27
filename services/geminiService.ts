@@ -19,8 +19,8 @@ import { DifficultyLevel, QuestionFormat } from "../types";
 
 
 
-const getAI = () => new GoogleGenAI({ apiKey: 'AIzaSyBstyJ3Qt8MdM9YOw5L7VFz9RwK6BZ4l2s' });
-// const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
+
+const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL });
 
 export const paraphraseText = async (text: string, tone: string = 'academic'): Promise<string> => {
   const ai = getAI();
