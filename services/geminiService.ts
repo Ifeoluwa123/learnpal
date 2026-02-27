@@ -13,9 +13,9 @@ const getApiKey = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_API_URL }
 //   return (typeof process !== 'undefined' ? (process.env.API_KEY || process.env.GEMINI_API_KEY) : '') as string;
 // };
 
-// const getAI = () => {
-//   return new GoogleGenAI({ apiKey: getApiKey() });
-// };
+const getAI = () => {
+  return new GoogleGenAI({ apiKey: getApiKey() });
+};
 
 export const generateStudyOutline = async (text: string): Promise<StudyOutline> => {
   const ai = getAI();
